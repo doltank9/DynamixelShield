@@ -18,6 +18,7 @@
  * Version: 0.0.4
  * Authors: Hancheol Cho (Baram) 
  *          KyungWan Ki  (Kei)
+ *          +
  */
 
 #ifndef DYNAMIXEL_SHIELD_H_
@@ -71,13 +72,19 @@ typedef struct
   dxl_model_addr_t cur_pos;  
   dxl_model_addr_t goal_speed;  
   dxl_model_addr_t cur_speed;    
+  dxl_model_addr_t goal_pwm;//
   dxl_model_addr_t torque;  
   dxl_model_addr_t led;  
   dxl_model_addr_t op_mode;  
+  dxl_model_addr_t velocity;//
+  dxl_model_addr_t acceleration;   //
+  dxl_model_addr_t id2;   //
   uint8_t          op_joint_mode;
   uint8_t          op_wheel_mode;
+  uint8_t          op_extand_mode; //
   uint16_t         max_res;
   uint16_t         max_angle;
+  
 
   dxl_model_addr_t id;  
   dxl_model_addr_t baud;  
@@ -141,7 +148,9 @@ public:
 
   bool setJointMode(uint8_t id);
   bool setWheelMode(uint8_t id);
-  
+  bool setExtandMode(uint8_t id);//
+  bool setGoalPWM(uint8_t id, uint16_t pwm);//
+
   bool    setGoalPosition(uint8_t id, uint32_t position);
   int32_t getGoalPosition(uint8_t id);
   int32_t getCurPosition(uint8_t id);
@@ -153,6 +162,10 @@ public:
   bool    setGoalAngle(uint8_t id, int32_t angle);
   int32_t getGoalAngle(uint8_t id); 
   int32_t getCurAngle(uint8_t id);
+
+  bool    setAcceleration(uint8_t id, uint32_t acceleration);//
+  bool    setVelocity(uint8_t id, uint32_t velocity);//
+  bool    setID2(uint8_t id, uint8_t new_id2);//
 
   bool syncWriteBegin(void);
   bool syncWriteEnd(void);
