@@ -61,7 +61,11 @@ peek	KEYWORD2
 read	KEYWORD2
 flush	KEYWORD2
 
-#######################################
+setExtandMode	KEYWORD2
+setGoalPWM	KEYWORD2
+setVelocity	KEYWORD2
+setAcceleration	KEYWORD2
+setID2	KEYWORD2#######################################
 # Constants (LITERAL1)
 #######################################
 
