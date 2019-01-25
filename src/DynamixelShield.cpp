@@ -17,6 +17,7 @@
 /* 
  * Authors: Hancheol Cho (Baram) 
  *          KyungWan Ki  (Kei)
+ *          +
  */
 
 #include "DynamixelShield.h"
@@ -243,6 +244,21 @@ bool DynamixelShield::setID(uint8_t id, uint8_t new_id)
   return ret;
 }
 
+bool DynamixelShield::setID2(uint8_t id, uint8_t new_id2)
+{
+	bool ret;
+	dxl_model_t dxl_model;
+
+	ret = getDxlModelFromID(id, &dxl_model);
+
+	if (ret == true)
+	{
+		ret = write(id, dxl_model.id.addr, (uint8_t *)&new_id2, dxl_model.id.length, 100);
+	}
+
+	return ret;
+}
+
 bool DynamixelShield::setBaud(uint8_t id, uint32_t new_baud)
 {
   bool ret;
@@ -410,6 +426,26 @@ bool DynamixelShield::setWheelMode(uint8_t id)
   return ret;
 }
 
+bool DynamixelShield::setExtandMode(uint8_t id)
+{
+	bool ret;
+	uint8_t data;
+	dxl_model_t dxl_model;
+
+	ret = getDxlModelFromID(id, &dxl_model);
+
+	if (ret == true)
+	{
+		if (dxl_model.protocol == DXL_PACKET_VER_2_0)
+		{
+			data = dxl_model.op_extand_mode;
+			ret = write(id, dxl_model.op_mode.addr, (uint8_t *)&data, dxl_model.op_mode.length, 100);
+		}
+	}
+
+	return ret;
+}
+
 bool DynamixelShield::addSyncWrite(uint8_t id, uint16_t addr, uint8_t *p_data, uint16_t length)
 {
   if (param.sync_write.id_count >= DXLCMD_MAX_NODE)
@@ -483,6 +519,85 @@ bool DynamixelShield::setGoalSpeed(uint8_t id, int32_t speed)
 
   return true;
 }
+
+bool DynamixelShield::setVelocity(uint8_t id, uint32_t velocity)
+{
+	bool ret;
+	uint32_t data;
+	dxl_model_t dxl_model;
+
+	ret = getDxlModelFromID(id, &dxl_model);
+
+	if (ret == true)
+	{
+		data = velocity;
+
+		if (sync_write_enable == true)
+		{
+			sync_write_version = dxl_model.protocol;
+			addSyncWrite(id, dxl_model.velocity.addr, (uint8_t *)&data, dxl_model.velocity.length);
+		}
+		else
+		{
+			ret = write(id, dxl_model.velocity.addr, (uint8_t *)&data, dxl_model.velocity.length, 100);
+		}
+	}
+
+	return ret;
+}
+
+bool DynamixelShield::setAcceleration(uint8_t id, uint32_t acceleration)
+{
+	bool ret;
+	uint32_t data;
+	dxl_model_t dxl_model;
+
+	ret = getDxlModelFromID(id, &dxl_model);
+
+	if (ret == true)
+	{
+		data = acceleration;
+
+		if (sync_write_enable == true)
+		{
+			sync_write_version = dxl_model.protocol;
+			addSyncWrite(id, dxl_model.acceleration.addr, (uint8_t *)&data, dxl_model.acceleration.length);
+		}
+		else
+		{
+			ret = write(id, dxl_model.acceleration.addr, (uint8_t *)&data, dxl_model.acceleration.length, 100);
+		}
+	}
+
+	return ret;
+}
+
+bool DynamixelShield::setGoalPWM(uint8_t id, uint16_t pwm)
+{
+	bool ret;
+	uint32_t data;
+	dxl_model_t dxl_model;
+
+	ret = getDxlModelFromID(id, &dxl_model);
+
+	if (ret == true)
+	{
+		data = pwm;
+
+		if (sync_write_enable == true)
+		{
+			sync_write_version = dxl_model.protocol;
+			addSyncWrite(id, dxl_model.goal_pwm.addr, (uint8_t *)&data, dxl_model.goal_pwm.length);
+		}
+		else
+		{
+			ret = write(id, dxl_model.goal_pwm.addr, (uint8_t *)&data, dxl_model.goal_pwm.length, 100);
+		}
+	}
+
+	return ret;
+}
+
 
 int32_t DynamixelShield::getGoalPosition(uint8_t id)
 {
@@ -846,6 +961,8 @@ void DynamixelShield::getDxlModel(uint8_t model_index, dxl_model_t *p_model)
       p_model->id.length = 1;         
       p_model->baud.addr   = 4;
       p_model->baud.length = 1;               
+	  p_model->velocity.addr = 32; //
+	  p_model->velocity.length = 2; //
 
       if (model_index == M_EX)
       {
@@ -913,7 +1030,15 @@ void DynamixelShield::getDxlModel(uint8_t model_index, dxl_model_t *p_model)
       p_model->id.addr   = 7;
       p_model->id.length = 1;         
       p_model->baud.addr   = 8;
-      p_model->baud.length = 1;                                     
+      p_model->baud.length = 1;
+
+	  p_model->velocity.addr = 112; //
+	  p_model->velocity.length = 4; //
+	  p_model->acceleration.addr = 108; //
+	  p_model->acceleration.length = 4; //
+	  p_model->goal_pwm.addr = 100; //
+	  p_model->goal_pwm.length = 2; //
+	  p_model->op_extand_mode = 4; //
       break;          
   }
 }
