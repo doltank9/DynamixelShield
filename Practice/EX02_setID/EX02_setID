@@ -1,0 +1,24 @@
+#include <DynamixelShield.h>
+DynamixelShield dxl;
+
+void setup()
+{
+  // put your setup code here, to run once:
+  dxl.begin(1000000);
+  delay(100);
+  dxl.addMotor(1, M_XL430);// M_AX12, M_AX18, M_MX28, M_XL430 .....
+  dxl.torqueOff(1);
+  dxl.setID(1,2);
+  delay(100);
+  dxl.setJointMode(2);
+  dxl.torqueOn(2);
+  
+}
+
+void loop()
+{
+  dxl.setGoalAngle(2,1800);
+  delay(2000);
+  dxl.setGoalAngle(2,2700);
+  delay(2000);
+}
