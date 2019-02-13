@@ -1,5 +1,6 @@
 //Source Code
 //modified from example "addMotor "
+// - by doltank9 -
 #include <DynamixelShield.h>
 DynamixelShield dxl;
   
