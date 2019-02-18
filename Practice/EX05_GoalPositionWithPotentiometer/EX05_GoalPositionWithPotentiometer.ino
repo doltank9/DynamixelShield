@@ -4,7 +4,7 @@ DynamixelShield dxl;
 
 void setup() {
   // put your setup code here, to run once:
-  dxl.begin(1000000);
+  dxl.begin(57600);
   delay(1000);
   dxl.addMotor(1,M_XL430);
   pinMode(14,INPUT);
