@@ -1,4 +1,4 @@
-.ino//소스코드
+//소스코드
 #include <DynamixelShield.h>
 DynamixelShield dxl;
 
